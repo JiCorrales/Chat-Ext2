@@ -1,45 +1,41 @@
-import java.net.*;
-import java.io.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatServer {
-    private ServerSocket serverSocket;
-    private int port;
+    private static final int PORT = 4444;
+    private static List<ClientHandler> clients = new ArrayList<>();
 
-    public ChatServer() {
-        this.port = 8000; // puedes empezar desde este puerto y verificar hacia arriba
-        while (true) {
-            try {
-                this.serverSocket = new ServerSocket(port);
-                System.out.println("Servidor iniciado en el puerto: " + port);
-                break;
-            } catch (IOException e) {
-                port++;
+    public static void main(String[] args) {
+        new ChatServer().runServer();
+    }
+
+    public void runServer() {
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("El servidor está en marcha...");
+
+            while (true) {
+                Socket socket = serverSocket.accept();
+                ClientHandler client = new ClientHandler(socket, this);
+                clients.add(client);
+                new Thread(client).start();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public int getPort() {
-        return this.port;
+    // Se utiliza para reenviar un mensaje a todos los clientes.
+    public void broadcastMessage(String message) {
+        for (ClientHandler client : clients) {
+            client.sendMessage(message);
+        }
     }
 
-    public void startServer() {
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    String message = in.readLine();
-                    System.out.println("Mensaje recibido: " + message);
-                    // Aquí puedes agregar código para manejar los mensajes recibidos.
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    public static void main(String[] args) {
-        ChatServer server = new ChatServer();
-        server.startServer();
+    // Elimina un cliente de la lista.
+    public void removeClient(ClientHandler client) {
+        clients.remove(client);
     }
 }
