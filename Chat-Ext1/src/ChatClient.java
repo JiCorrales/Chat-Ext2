@@ -1,61 +1,39 @@
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.net.Socket;
-import java.io.*;
-
-public class ChatClient extends Application {
+public class ChatClient {
     private User currentUser;
+    private Stage chatStage;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        currentUser = new User();
+    public ChatClient() {
+        this.currentUser = new User();
+        this.chatStage = new Stage();
 
         VBox root = new VBox(10);
-        TextField ipField = new TextField("127.0.0.1");
-        TextField portField = new TextField("8000"); // puerto por defecto
         TextArea chatArea = new TextArea();
         TextField inputField = new TextField();
         Button sendButton = new Button("Enviar");
 
         sendButton.setOnAction(event -> {
-            String ip = ipField.getText();
-            int port = Integer.parseInt(portField.getText());
+            // Aquí puedes agregar la lógica para enviar el mensaje a otros usuarios.
             String message = inputField.getText();
-
-            if (!message.isEmpty()) {
-                sendMessage(ip, port, currentUser.getUsername() + ": " + message);
-                chatArea.appendText("Yo: " + message + "\n");
-                inputField.clear();
-            }
+            chatArea.appendText(currentUser.getUsername() + ": " + message + "\n");
+            inputField.clear();
         });
 
-        root.getChildren().addAll(ipField, portField, chatArea, inputField, sendButton);
+        root.getChildren().addAll(chatArea, inputField, sendButton);
         Scene scene = new Scene(root, 300, 400);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Chat - " + currentUser.getUsername());
-        primaryStage.show();
+        chatStage.setScene(scene);
+        chatStage.setTitle("Chat - " + currentUser.getUsername());
     }
 
-    private void sendMessage(String ip, int port, String message) {
-        try {
-            Socket socket = new Socket(ip, port);
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(message);
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void showWindow() {
+        chatStage.show();
     }
 
-    private class User {
+    private static class User {
         private static int userCount = 0;
         private String username;
 
