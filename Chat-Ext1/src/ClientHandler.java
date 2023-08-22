@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
+
 
 public class ClientHandler implements Runnable {
     private Socket socket;
@@ -20,6 +22,7 @@ public class ClientHandler implements Runnable {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
             System.out.println("Cliente conectado: " + socket.getInetAddress());
+        server.addToHistory("Cliente conectado: " + socket.getInetAddress());
 
             String message;
             while ((message = in.readLine()) != null) {
@@ -31,8 +34,18 @@ public class ClientHandler implements Runnable {
                     break;
                 }
                 server.broadcastMessage(message);
+    server.addToHistory(message);
             }
-        } catch (IOException e) {
+        } catch (SocketException se) {
+    server.addToHistory(socket.getInetAddress() + " ha salido del chat.");
+    System.out.println("Conexión cerrada.");
+    server.removeClient(this);
+    try {
+        socket.close();
+    } catch (IOException ioException) {
+        ioException.printStackTrace();
+    }
+} catch (IOException e) {
             e.printStackTrace();
         }
     }

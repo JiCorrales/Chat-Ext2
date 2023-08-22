@@ -17,6 +17,7 @@ public class ChatServer {
     }
 
     public void runServer() {
+    showHistoryWindow();
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("El servidor está en marcha...");
 
