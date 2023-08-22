@@ -18,9 +18,7 @@ import java.net.SocketException;
  */
 public class ChatClient {
 
-/** Variables miembro y métodos de la clase
-
-*/
+    // Atributos privados para manejar la conexión y la interfaz de usuario
     private static int userCount = 0;
     private User currentUser;
     private Stage chatStage;
@@ -34,12 +32,15 @@ public class ChatClient {
      * así como los componentes de la interfaz de usuario del cliente.
      */
     public ChatClient() {
-        // ... (implementación del constructor)
-        userCount++;
+
+        userCount++;//incrementa la cantidad de usuarios
         currentUser = new User("User-" + String.format("%03d", userCount));
 
         try {
-            socket = new Socket("127.0.0.1", 6666); // Conexión al servidor.
+            // Crea una conexión al servidor en la dirección y puerto especificados
+            socket = new Socket("127.0.0.1", 6666);
+
+            // Configura el flujo de salida para enviar mensajes al servidor
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -48,6 +49,7 @@ public class ChatClient {
                 try {
                     String receivedMessage;
                     while ((receivedMessage = in.readLine()) != null) {
+                        // Agrega el mensaje al área de chat en la interfaz de usuario
                         chatArea.appendText(receivedMessage + "\n");
                     }
                 } catch (SocketException se) {
@@ -61,7 +63,7 @@ public class ChatClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        // Configura la interfaz de usuario del cliente
         chatStage = new Stage();
         VBox root = new VBox(10);
         chatArea = new TextArea();
@@ -72,6 +74,7 @@ public class ChatClient {
         sendButton.setOnAction(event -> {
             String message = inputField.getText();
             if ("exit".equalsIgnoreCase(message)) {
+                // Maneja la salida del chat
                 out.println(currentUser.getUsername() + " ha salido del chat.");
                 try {
                     socket.close();
@@ -82,13 +85,16 @@ public class ChatClient {
                 }
                 chatStage.close();
             } else {
+                // Envía el mensaje al servidor y agrega el mensaje al área de chat
                 out.println(currentUser.getUsername() + ": " + message);
                 inputField.clear();
             }
         });
 
+        // Configura botón para salir del chat
         Button exitButton = new Button("Salir");
         exitButton.setOnAction(event -> {
+            // Maneja la salida del chat
             out.println(currentUser.getUsername() + " ha salido del chat.");
             try {
                 socket.close();
@@ -97,7 +103,7 @@ public class ChatClient {
             }
             chatStage.close();
         });
-
+        // Agrega componentes a la interfaz de usuario
         root.getChildren().addAll(chatArea, inputField, sendButton, exitButton);
 
         Scene scene = new Scene(root, 400, 500);
@@ -119,7 +125,7 @@ public class ChatClient {
      * @return El nombre de usuario actual del cliente.
      */
     public String getCurrentUsername() {
-        // implementación del método getCurrentUsername
+        // retorna el nombre de usuario
         return currentUser.getUsername();
     }
 
@@ -131,6 +137,7 @@ public class ChatClient {
         private String username;
 
         public User(String username) {
+            // Establece el nombre dado como parametro como username
             this.username = username;
         }
 
