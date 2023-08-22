@@ -6,6 +6,10 @@ import java.net.Socket;
 import java.net.SocketException;
 
 
+/**
+ * Clase que representa un manejador de cliente en el servidor de chat.
+ * Administra la comunicación con un cliente específico y reenvía mensajes a otros clientes.
+ */
 public class ClientHandler implements Runnable {
     private Socket socket;
     private ChatServer server;

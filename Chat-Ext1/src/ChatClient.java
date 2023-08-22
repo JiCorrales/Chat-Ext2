@@ -12,7 +12,15 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 
+/**
+ * La clase ChatClient representa la implementación del lado del cliente de la aplicación de chat.
+ * Se conecta al servidor y maneja la comunicación con otros usuarios a través del servidor.
+ */
 public class ChatClient {
+
+/** Variables miembro y métodos de la clase
+
+*/
     private static int userCount = 0;
     private User currentUser;
     private Stage chatStage;
@@ -21,7 +29,12 @@ public class ChatClient {
     private PrintWriter out;
     private BufferedReader in;
 
+    /**
+     * Constructor de la clase ChatClient. Inicializa y configura la conexión con el servidor,
+     * así como los componentes de la interfaz de usuario del cliente.
+     */
     public ChatClient() {
+        // ... (implementación del constructor)
         userCount++;
         currentUser = new User("User-" + String.format("%03d", userCount));
 
@@ -92,15 +105,29 @@ public class ChatClient {
         chatStage.setTitle(currentUser.getUsername());
     }
 
+    /**
+     * Muestra la ventana de la interfaz de usuario del cliente de chat.
+     */
     public void showWindow() {
+        // implementación del método showWindow
         chatStage.show();
     }
 
+    /**
+     * Obtiene el nombre de usuario actual del cliente.
+     *
+     * @return El nombre de usuario actual del cliente.
+     */
     public String getCurrentUsername() {
+        // implementación del método getCurrentUsername
         return currentUser.getUsername();
     }
 
+    /**
+     * Clase interna que representa un usuario en el chat.
+     */
     private static class User {
+        // implementación de la clase interna User
         private String username;
 
         public User(String username) {
