@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ChatClient {
     private static int userCount = 0;
@@ -25,7 +26,7 @@ public class ChatClient {
         currentUser = new User("User-" + String.format("%03d", userCount));
 
         try {
-            socket = new Socket("127.0.0.1", 4444); // Conexión al servidor.
+            socket = new Socket("127.0.0.1", 6666); // Conexión al servidor.
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -36,6 +37,8 @@ public class ChatClient {
                     while ((receivedMessage = in.readLine()) != null) {
                         chatArea.appendText(receivedMessage + "\n");
                     }
+                } catch (SocketException se) {
+                    System.out.println("Conexión cerrada.");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -59,6 +62,8 @@ public class ChatClient {
                 out.println(currentUser.getUsername() + " ha salido del chat.");
                 try {
                     socket.close();
+                } catch (SocketException se) {
+                    System.out.println("Conexión cerrada.");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

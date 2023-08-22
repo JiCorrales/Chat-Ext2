@@ -1,3 +1,7 @@
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -5,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatServer {
-    private static final int PORT = 4444;
+    private static final int PORT = 6666;
     private static List<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -38,4 +42,21 @@ public class ChatServer {
     public void removeClient(ClientHandler client) {
         clients.remove(client);
     }
+
+
+private JTextArea historyArea = new JTextArea();
+
+public void showHistoryWindow() {
+    JFrame frame = new JFrame("Historial");
+    frame.setSize(400, 300);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    historyArea.setEditable(false);
+    JScrollPane scrollPane = new JScrollPane(historyArea);
+    frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
+    frame.setVisible(true);
+}
+
+public void addToHistory(String message) {
+    historyArea.append(message + "\n");
+}
 }
