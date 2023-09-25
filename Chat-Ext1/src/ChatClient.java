@@ -39,7 +39,8 @@ public class ChatClient {
         try {
             // Crea una conexión al servidor en la dirección y puerto especificados
             socket = new Socket("127.0.0.1", 6666);
-
+              int localPort = socket.getLocalPort();
+            currentUser = new User("Port-" + localPort);
             // Configura el flujo de salida para enviar mensajes al servidor
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
